@@ -29,14 +29,16 @@ class Router
         $data = $this->parseUrl();
         $controllerName = $data['controller'];
         $action = $data['action'];
-
-        $controller = sprintf("Controller\\%s", ucfirst($controllerName));
+        $factory = new \system\Factory\Factory();
+        $objectManager = new \system\ObjectManager($factory);
+        $objectManager->create(\App::class);
+        $controller = "Controller\\" . ucfirst($controllerName) . "::class";
         if (class_exists($controller)) {
-            $controller = new $controller($view);
+            $controller = $objectManager->create($controller); //new $controller($view);
             $response = $controller->$action();
             echo $response;
         } else {
-            $controller = new \Controller\NotFound($view);
+            $controller = $objectManager->create(\Controller\NotFound::class); //new \Controller\NotFound($view);
             $response = $controller->$action();
             echo $response;
         }
