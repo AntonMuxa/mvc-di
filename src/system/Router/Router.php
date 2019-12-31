@@ -8,7 +8,7 @@ class Router
 {
     public function parseUrl ()
     {
-        $controller = 'main';
+        $controller = 'Main';
         $action     = 'index';
         $parts = explode('?', $_SERVER['REQUEST_URI']);
         $uriParts = explode('/', $parts[0]);
@@ -31,14 +31,15 @@ class Router
         $action = $data['action'];
         $factory = new \system\Factory\Factory();
         $objectManager = new \system\ObjectManager($factory);
-        $objectManager->create(\App::class);
-        $controller = "Controller\\" . ucfirst($controllerName) . "::class";
+        $controller = sprintf("Controller\\%s", ucfirst($controllerName));
+
         if (class_exists($controller)) {
             $controller = $objectManager->create($controller); //new $controller($view);
             $response = $controller->$action();
             echo $response;
         } else {
-            $controller = $objectManager->create(\Controller\NotFound::class); //new \Controller\NotFound($view);
+            //$controller = new \Controller\NotFound($view);
+            $controller = $objectManager->create(\Controller\NotFound::class);
             $response = $controller->$action();
             echo $response;
         }

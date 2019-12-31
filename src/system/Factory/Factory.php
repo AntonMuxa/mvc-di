@@ -31,12 +31,13 @@ class Factory implements FactoryInterface
         $reflection = new \ReflectionClass($className);
 
         $parameters = [];
-
-        foreach ($reflection->getConstructor()->getParameters() as $parameter) {
-            if ($parameter->isOptional()) {
-                break;
+        if(!empty($reflection->getConstructor())) {
+            foreach ($reflection->getConstructor()->getParameters() as $parameter) {
+                if ($parameter->isOptional()) {
+                    break;
+                }
+                $parameters[$parameter->getName()] = $parameter->getClass()->getName();
             }
-            $parameters[$parameter->getName()] = $parameter->getClass()->getName();
         }
 
         return $parameters;
